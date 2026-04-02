@@ -1,6 +1,6 @@
 import React from "react";
 import Logo from "../../Utility/Logo";
-import { NavLink } from "react-router";
+import { Link, NavLink } from "react-router";
 import Container from "../../Utility/Container";
 import Theme from "../../Utility/Theme";
 import AppSidebar from "../../Utility/AppSidebar";
@@ -12,16 +12,13 @@ const Header = () => {
 
   const navLinks = [
     { name: "Home", path: "/" },
-    { name: "Send Parcel", path: "/send" },
-    { name: "Tracking", path: "/tracking" },
-    { name: "Pricing", path: "/pricing" },
-    { name: "Contact", path: "/contact" },
+    { name: "Coverage", path: "/coverage" },
   ];
   return (
     <header className="bg-base-100 shadow z-500">
       <Container className=" py-3.5 flex items-center justify-between">
         {/* Logo */}
-        <Logo></Logo>
+        <Link> <Logo></Logo></Link>
 
         {/* Desktop Menu */}
         <nav className="hidden md:flex items-center gap-8">

@@ -10,6 +10,7 @@ import {
 import Logo from "./Logo";
 import { NavLink } from "react-router";
 import Hamburger from "hamburger-react";
+import { PiMapPinAreaLight } from "react-icons/pi";
 
 const AppSidebar = () => {
   const [toggled, setToggled] = useState(false);
@@ -43,11 +44,11 @@ const AppSidebar = () => {
               />
             }
           >
-            Dashboard
+            Home
           </MenuItem>
 
-          <MenuItem icon={<FaCalendarAlt />} component={<NavLink />}>
-            Calendar
+          <MenuItem icon={<PiMapPinAreaLight />} component={<NavLink to={"/coverage"}/>}>
+            Coverage
           </MenuItem>
 
           <MenuItem icon={<FaShoppingCart />} component={<NavLink />}>
