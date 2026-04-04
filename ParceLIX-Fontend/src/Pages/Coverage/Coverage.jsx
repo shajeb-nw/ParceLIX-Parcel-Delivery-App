@@ -16,7 +16,7 @@ const Coverage = () => {
   useEffect(() => {
     const fetchDistrict = async () => {
       try {
-        let res = await axios.get("/division.json");
+        let res = await axios.get("division.json");
         setDistrict(res?.data);
       } catch (error) {
         setError(error.message);

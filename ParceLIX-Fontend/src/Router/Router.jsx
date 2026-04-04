@@ -4,6 +4,7 @@ import Home from "../Pages/Home/Home";
 import Coverage from "../Pages/Coverage/Coverage";
 import Signup from "../Pages/RegisterForm/Singup";
 import Login from "../Pages/RegisterForm/Login";
+import ParcelSend from "../Pages/ParcelSend/ParcelSend";
 
 export const router = createBrowserRouter([
   {
@@ -14,6 +15,7 @@ export const router = createBrowserRouter([
       { path: "coverage", Component: Coverage },
       { path: "signup", Component: Signup },
       { path: "login", Component: Login },
+      {path:"parcelsend",Component:ParcelSend}
     ],
   },
 ]);
