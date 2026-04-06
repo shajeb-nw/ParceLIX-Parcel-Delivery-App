@@ -3,6 +3,7 @@ import { useForm } from "react-hook-form";
 import { FaUser } from "react-icons/fa";
 import Container from "../../Utility/Container";
 import axios from "axios";
+import Swal from "sweetalert2";
 
 const ParcelSend = () => {
   const {
@@ -24,7 +25,38 @@ const ParcelSend = () => {
       ...data,
       parcelType: parcelType,
     };
+    const sameDistrict = formData.senderDistrict === formData.receiverDistrict;
+    const parcelTypes = formData.parcelType;
+    const parcelWeight = parseFloat(formData.weight);
+
     console.log("Form Data:", formData);
+    let cost = 0;
+    if (parcelTypes === "document") {
+      cost = sameDistrict ? 60 : 80;
+    } else {
+      if (parcelWeight <= 3) {
+        cost = sameDistrict ? 110 : 150;
+      } else {
+        const extraWeight = (parcelWeight - 3) * 40;
+        cost = sameDistrict ? 110 + extraWeight : 150 + extraWeight + 40;
+      }
+    }
+    Swal.fire({
+      title: "Are you sure?",
+      text: `You Will Be charge Att ${cost} !`,
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, Confirm!",
+    }).then((result) => {
+      if (result.isConfirmed)
+        Swal.fire({
+          title: "Confirm!",
+          text: "Parcel Was Send. thank you!",
+          icon: "success",
+        });
+    });
   };
   useEffect(() => {
     let diviton = async () => {
@@ -216,8 +248,14 @@ const ParcelSend = () => {
                 ))}
               </select>
 
-              <select {...register("receiverDistrict", { required: true })} defaultValue="" className={selectClass}>
-                <option value="" disabled>Select District</option>
+              <select
+                {...register("receiverDistrict", { required: true })}
+                defaultValue=""
+                className={selectClass}
+              >
+                <option value="" disabled>
+                  Select District
+                </option>
                 {reciverDistrict?.map((res, index) => (
                   <option key={index}>{res?.district}</option>
                 ))}
@@ -245,7 +283,7 @@ const ParcelSend = () => {
             {errors.parcelName && <p>Parcel name is required</p>}
             {errors.weight && <p>Weight is required</p>}
           </div>
-
+          <p>* PickUp Time 4pm-7pm Approx.</p>
           {/* Submit Button */}
           <button
             type="submit"
