@@ -1,6 +1,9 @@
+const env=require("./env")
+console.log(env);
+
 const corsOptions = {
   origin: [
-    "http://localhost:3000"
+    env.clientUrl
   ],
   credentials: true
 }

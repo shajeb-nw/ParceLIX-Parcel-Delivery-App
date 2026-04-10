@@ -4,6 +4,7 @@ import { FaUser } from "react-icons/fa";
 import Container from "../../Utility/Container";
 import axios from "axios";
 import Swal from "sweetalert2";
+import useAxious from "../../Hooks/useAxious";
 
 const ParcelSend = () => {
   const {
@@ -14,6 +15,7 @@ const ParcelSend = () => {
   } = useForm();
   const senderRegion = watch("senderDivition");
   const reciverRegion = watch("reciverDiviton");
+  const axiosInstance = useAxious();
 
   const [parcelType, setParcelType] = useState("document");
   const [diviton, segtDiviton] = useState([]);
@@ -29,8 +31,8 @@ const ParcelSend = () => {
     const parcelTypes = formData.parcelType;
     const parcelWeight = parseFloat(formData.weight);
 
-    console.log("Form Data:", formData);
     let cost = 0;
+
     if (parcelTypes === "document") {
       cost = sameDistrict ? 60 : 80;
     } else {
@@ -50,12 +52,19 @@ const ParcelSend = () => {
       cancelButtonColor: "#d33",
       confirmButtonText: "Yes, Confirm!",
     }).then((result) => {
-      if (result.isConfirmed)
+      if (result.isConfirmed) {
+        const parcelData = {
+          ...formData,
+          parcelCost: cost,
+        };
+        axiosInstance.post("/parcel", parcelData);
+
         Swal.fire({
           title: "Confirm!",
           text: "Parcel Was Send. thank you!",
           icon: "success",
         });
+      }
     });
   };
   useEffect(() => {
