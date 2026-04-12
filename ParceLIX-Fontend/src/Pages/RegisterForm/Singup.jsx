@@ -13,13 +13,17 @@ import { AuthContext } from "../../useContext/FormContext/AuthContext";
 import { toast } from "react-toastify";
 import axios from "axios";
 import { updateProfile } from "firebase/auth";
-import { Link } from "react-router";
+import { Link, useLocation, useNavigate } from "react-router";
 
 export default function Signup() {
   const [showPass, setShowPass] = useState(false);
   const [preview, setPreview] = useState(null);
   const { createUser } = useContext(AuthContext);
   const [loading, setLoading] = useState(false);
+  const location=useLocation()
+  const navigate=useNavigate()
+   const from = location.state?.from?.pathname || "/";
+  
   const {
     register,
     handleSubmit,
@@ -70,6 +74,7 @@ export default function Signup() {
       });
       reset();
       setLoading(false);
+       navigate(from, { replace: true });
     } catch (error) {
       if (error.code === "auth/email-already-in-use") {
         toast.error("Email already exists");

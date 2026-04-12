@@ -4,20 +4,22 @@ import Container from "../../Utility/Container";
 import { useForm } from "react-hook-form";
 import { AuthContext } from "../../useContext/FormContext/AuthContext";
 import { toast } from "react-toastify";
-import { Link } from "react-router";
+import { Link, useLocation, useNavigate } from "react-router";
 
 export default function Login() {
   const [showPass, setShowPass] = useState(false);
   const { loginUser, googleSignin } = useContext(AuthContext);
   const [loading, setLoading] = useState(false);
-  console.log(loading);
+  const location=useLocation()
+  const navigate=useNavigate()
+
   
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm();
-
+   const from = location.state?.from?.pathname || "/";
   const onSubmit = async (data) => {
     try {
       setLoading(true);
@@ -26,6 +28,7 @@ export default function Login() {
       await loginUser(email, password);
 
       toast.success("Login successful 🎉");
+      navigate(from, { replace: true });
       setLoading(false);
     } catch (error) {
       toast.error(error.message);
@@ -37,6 +40,7 @@ export default function Login() {
     try {
       await googleSignin();
       toast.success("Login successful 🎉");
+        navigate(from, { replace: true });
     } catch (error) {
       toast.error(error.message);
     }
@@ -125,7 +129,7 @@ export default function Login() {
           </button>
           <p className="text-center text-sm text-gray-500 mt-6">
             Don’t have an account?{" "}
-            <Link to="/signup" className="text-color font-semibold hover:underline">
+            <Link to="/signup" state={location?.state} className="text-color font-semibold hover:underline">
               Sign Up
             </Link>
           </p>

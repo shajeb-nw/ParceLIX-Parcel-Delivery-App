@@ -22,6 +22,8 @@ const ParcelSend = () => {
   const [district, setDistrict] = useState([]);
   const [districtSender, setDistrictSender] = useState([]);
   const [reciverDistrict, setDistrictReciver] = useState([]);
+  console.log(diviton);
+  
   const onSubmit = (data) => {
     const formData = {
       ...data,
@@ -72,7 +74,7 @@ const ParcelSend = () => {
       try {
         const AllDiviton = await axios.get("division.json");
         const allDistrict = await axios.get("warehouses.json");
-        segtDiviton(AllDiviton?.data);
+        segtDiviton(Array.isArray(AllDiviton.data) ? AllDiviton.data : []);
         setDistrict(allDistrict?.data);
       } catch (error) {
         console.log(error.message);

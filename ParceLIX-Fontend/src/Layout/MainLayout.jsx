@@ -13,6 +13,7 @@ const MainLayout = () => {
             <div className='fixed text-white bottom-2.5 p-2 rounded-md right-2.5 bg-gradient-to-r from-[#08aafb] to-[#ae0cff]'>
                 <Theme></Theme>
             </div>
+            
         </div>
     );
 };

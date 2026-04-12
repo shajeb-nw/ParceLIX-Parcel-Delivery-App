@@ -4,5 +4,10 @@ const postParcel=async(data)=>{
     const result=await db.collection("data").insertOne(data)
     return result
 }
-module.exports={postParcel}
 
+const getParcel= async()=>{
+    const db=getDB()
+    const result=await db.collection("data").find().toArray()
+    return result
+}
+module.exports={postParcel,getParcel}

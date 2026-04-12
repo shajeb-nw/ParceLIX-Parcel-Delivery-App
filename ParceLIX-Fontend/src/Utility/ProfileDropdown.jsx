@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect, useContext } from "react";
 import { FaTimes } from "react-icons/fa";
 import { AuthContext } from "../useContext/FormContext/AuthContext";
+import { Link } from "react-router";
 
 export default function ProfileDropdown() {
   const { user,logoutUser } = useContext(AuthContext);
@@ -50,9 +51,9 @@ export default function ProfileDropdown() {
 
           {/* Actions */}
           <div className="mt-4 space-y-2">
-            <button className="w-full background-color text-white py-2 rounded-lg ">
+            <Link to={"/deashbord"} className="w-full background-color flex text-center items-center justify-center text-white py-2 rounded-lg ">
              <span> Dashboard</span>
-            </button>
+            </Link>
             <button onClick={()=>logoutUser()} className="w-full border py-2 rounded-lg hover:bg-gray-100">
               Logout
             </button>
