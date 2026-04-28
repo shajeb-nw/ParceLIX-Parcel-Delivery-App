@@ -5,18 +5,19 @@ import { AuthContext } from "../../useContext/FormContext/AuthContext";
 import { useQuery } from "@tanstack/react-query";
 import { FadeLoader } from "react-spinners";
 import Swal from "sweetalert2";
+import { Link } from "react-router";
+
 
 const ParcelDetails = () => {
   const axiousInstance = useAxious();
   const { user } = useContext(AuthContext);
 
-  // ✅ React Query
   const { data, isLoading, refetch } = useQuery({
     queryKey: ["todos", user?.email],
     enabled: !!user?.email,
     queryFn: async () => {
       const result = await axiousInstance.get(`/parcel?email=${user?.email}`);
-      return result?.data;
+       return Array.isArray(result?.data) ? result?.data : [];
     },
   });
 
@@ -66,6 +67,37 @@ const ParcelDetails = () => {
     );
   }
 
+  // ✅ EMPTY STATE
+  if (!data || data.length === 0) {
+    return (
+      <div className="w-full min-h-screen flex items-center justify-center">
+        <div className="flex flex-col items-center justify-center text-center px-4">
+          {/* Animated Box Icon */}
+          <div className="text-9xl mb-6 animate-bounce">📦</div>
+
+          {/* Title */}
+          <h2 className="text-3xl font-bold text-gray-700 mb-3">
+            No Parcels Found!
+          </h2>
+
+          {/* Subtitle */}
+          <p className="text-gray-400 text-sm mb-8 max-w-sm">
+            You haven't added any parcel yet. Start by adding your first parcel
+            and track it easily!
+          </p>
+
+          {/* Button */}
+          <Link
+            to="/dashboard/addParcel"
+            className="px-8 py-3 rounded-2xl bg-gradient-to-r from-[#08aafb] to-[#ae0cff] text-white font-semibold text-sm shadow-lg hover:scale-105 transition duration-300"
+          >
+            ➕ Add New Parcel
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="p-6 w-full">
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-2 gap-6">
@@ -80,12 +112,10 @@ const ParcelDetails = () => {
                 <h2 className="text-lg font-bold flex items-center gap-2">
                   <FaBox /> {p.parcelName}
                 </h2>
-
                 <span className="text-xs px-3 py-1 bg-white/20 rounded-full">
                   {p.parcelType}
                 </span>
               </div>
-
               <p className="text-xs opacity-80 mt-1">
                 Parcel ID: {p._id.slice(-6)}
               </p>
@@ -149,12 +179,10 @@ const ParcelDetails = () => {
                     ৳ {p.parcelCost}
                   </p>
                 </div>
-
                 <div>
                   <p className="text-xs text-gray-400">Weight</p>
                   <p className="font-semibold">{p.weight} kg</p>
                 </div>
-
                 <div>
                   <p className="text-xs text-gray-400">Status</p>
                   <span
@@ -169,9 +197,8 @@ const ParcelDetails = () => {
                 </div>
               </div>
 
-              {/* ✅ ACTION BUTTONS (BOTTOM) */}
+              {/* ACTION BUTTONS */}
               <div className="flex justify-between items-center mt-4 gap-2">
-                {/* LEFT */}
                 <div className="flex gap-2">
                   <button
                     onClick={() => handleEdit(p)}
@@ -179,7 +206,6 @@ const ParcelDetails = () => {
                   >
                     ✏️ Edit
                   </button>
-
                   <button
                     onClick={() => handleDelete(p._id)}
                     className="px-4 py-2 text-sm rounded-xl bg-red-500 hover:bg-red-600 text-white transition flex items-center gap-1"
@@ -188,13 +214,15 @@ const ParcelDetails = () => {
                   </button>
                 </div>
 
-                {/* RIGHT */}
                 {p.paymentStatus === "paid" ? (
                   <button className="px-5 py-2 text-sm rounded-xl bg-gradient-to-r from-green-500 to-emerald-600 text-white font-semibold shadow-md hover:scale-105 transition">
                     💳 Paid
                   </button>
                 ) : (
-                  <button  onClick={()=>handlePayment(p)} className="px-5 py-2 text-sm rounded-xl bg-gradient-to-r from-green-500 to-emerald-600 text-white font-semibold shadow-md hover:scale-105 transition">
+                  <button
+                    onClick={() => handlePayment(p)}
+                    className="px-5 py-2 text-sm rounded-xl bg-gradient-to-r from-green-500 to-emerald-600 text-white font-semibold shadow-md hover:scale-105 transition"
+                  >
                     💳 Pay Now
                   </button>
                 )}
