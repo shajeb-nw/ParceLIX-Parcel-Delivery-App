@@ -1,15 +1,23 @@
 import React, { useState } from "react";
-import {
-  LuChevronsLeft,
-  LuChevronsRight,
-  LuLayoutDashboard,
-} from "react-icons/lu";
 import { Menu, MenuItem, Sidebar } from "react-pro-sidebar";
-import { FaClipboardList, FaCreditCard, FaTruck } from "react-icons/fa";
-import { Link } from "react-router";
+import {
+  FaHome,
+  FaCalendarAlt,
+  FaShoppingCart,
+  FaFileAlt,
+  FaCog,
+  FaTruck,
+  FaClipboardList,
+  FaCreditCard,
+} from "react-icons/fa";
+import Logo from "./Logo";
+import { Link, NavLink } from "react-router";
+import Hamburger from "hamburger-react";
+import { PiMapPinAreaLight } from "react-icons/pi";
+import { LuLayoutDashboard } from "react-icons/lu";
 
-const DeashbordSidebar = () => {
-  const [collapsed, setCollapsed] = React.useState(false);
+const DeashBordHeaderSidebar = () => {
+  const [toggled, setToggled] = useState(false);
   const [activeIndex, setActiveIndex] = useState(0);
   const navLinks = [
     { name: "Dashboard", path: "/deashbord", icon: <LuLayoutDashboard /> },
@@ -26,22 +34,17 @@ const DeashbordSidebar = () => {
     },
   ];
   return (
-    <div className="bg-base-100 min-h-screen h-full">
+    <div className="flex">
       <Sidebar
-        collapsed={collapsed}
-        rootStyles={{
-          [".ps-sidebar-container"]: {
-            backgroundColor: "hsl(var(--b1))",
-          },
-        }}
-        className="min-h-screen"
+        onBackdropClick={() => setToggled(false)}
+        toggled={toggled}
+        breakPoint="md"
+        backgroundColor="transparent" // এটা থাকতে পারে, কিন্তু CSS‑এ উপরের রুল থাকলে বাধ্যতামূলক না
+        style={{ background: "black", color: "white" }}
       >
-        <button
-          className="sb-button text-2xl absolute right-5 top-3 cursor-pointer"
-          onClick={() => setCollapsed(!collapsed)}
-        >
-          {collapsed ? <LuChevronsRight /> : <LuChevronsLeft />}
-        </button>
+        <div className="py-5">
+          <Logo />
+        </div>
 
         <Menu className="mt-10">
           {navLinks.map((link, index) => {
@@ -65,8 +68,17 @@ const DeashbordSidebar = () => {
           })}
         </Menu>
       </Sidebar>
+
+      <main className="">
+        <Hamburger
+          toggled={toggled}
+          toggle={setToggled}
+          easing="ease-in"
+          size={24}
+        />
+      </main>
     </div>
   );
 };
 
-export default DeashbordSidebar;
+export default DeashBordHeaderSidebar;

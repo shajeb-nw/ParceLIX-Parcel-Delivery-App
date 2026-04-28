@@ -9,6 +9,9 @@ import PrivateRouter from "./PrivateRouter";
 import DeashbordLayout from "../Layout/DeashbordLayout";
 import Deashbord from "../Pages/deashbord/Deashbord";
 import ParcelDetails from "../Pages/deashbord/ParcelDetails";
+import PaymentSuccess from "../Pages/Payment/PaymentSuccess";
+import PaymentError from "../Pages/Payment/PaymentError";
+import PaymentHistory from "../Pages/Payment/PaymentHistory";
 
 export const router = createBrowserRouter([
   {
@@ -37,9 +40,12 @@ export const router = createBrowserRouter([
       </PrivateRouter>
     ),
     children: [
-      { path: "deashbordPart", Component: Deashbord },
+      { index: true, Component: Deashbord },
       { path: "parcelsend", Component: ParcelSend },
-      {path:"parcelDetails",Component:ParcelDetails}
+      { path: "parcelDetails", Component: ParcelDetails },
+      { path: "paymentSuccess", Component: PaymentSuccess },
+      { path: "paymentError", Component: PaymentError },
+      { path: "paymentHistory", Component: PaymentHistory },
     ],
   },
 ]);

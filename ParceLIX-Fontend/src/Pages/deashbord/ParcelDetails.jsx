@@ -1,34 +1,79 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext } from "react";
 import useAxious from "../../Hooks/useAxious";
-import { FaPhone, FaMapMarkerAlt, FaBox, FaUser, FaEnvelope } from "react-icons/fa";
+import { FaPhone, FaMapMarkerAlt, FaBox, FaUser } from "react-icons/fa";
+import { AuthContext } from "../../useContext/FormContext/AuthContext";
+import { useQuery } from "@tanstack/react-query";
+import { FadeLoader } from "react-spinners";
+import Swal from "sweetalert2";
 
 const ParcelDetails = () => {
   const axiousInstance = useAxious();
-  const [data, setData] = useState([]);
+  const { user } = useContext(AuthContext);
 
-  useEffect(() => {
-    const fetchParcels = async () => {
+  // ✅ React Query
+  const { data, isLoading, refetch } = useQuery({
+    queryKey: ["todos", user?.email],
+    enabled: !!user?.email,
+    queryFn: async () => {
+      const result = await axiousInstance.get(`/parcel?email=${user?.email}`);
+      return result?.data;
+    },
+  });
+
+  // ✅ DELETE FUNCTION
+  const handleDelete = async (id) => {
+    const confirm = await Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!",
+    });
+
+    if (confirm.isConfirmed) {
       try {
-        const result = await axiousInstance.get("/parcel");
-        setData(result?.data?.data || result?.data);
+        await axiousInstance.delete(`/parcel/${id}`);
+        Swal.fire("Deleted!", "Parcel has been deleted.", "success");
+        refetch();
       } catch (error) {
-        console.log(error.message);
+        Swal.fire("Error!", "Something went wrong.", error.message);
       }
-    };
+    }
+  };
 
-    fetchParcels();
-  }, []);
+  // ✅ EDIT FUNCTION
+  const handleEdit = (parcel) => {
+    console.log("Edit parcel:", parcel);
+  };
+
+  // ✅ PAYMENT FUNCTION
+  const handlePayment = async (parcel) => {
+    try {
+      const res = await axiousInstance.post("/payment", parcel);
+      window.location.href = res.data.url;
+    } catch (error) {
+      Swal.fire("Error!", "Payment failed", error.message);
+    }
+  };
+
+  // ✅ LOADING
+  if (isLoading) {
+    return (
+      <div className="w-full min-h-screen flex items-center justify-center">
+        <FadeLoader />
+      </div>
+    );
+  }
 
   return (
     <div className="p-6 w-full">
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-2 gap-6">
-
         {data?.map((p) => (
           <div
             key={p._id}
-            className="bg-base-100 rounded-2xl shadow-sm hover:shadow-2xl transition duration-300 border border-gray-100 overflow-hidden"
+            className="group bg-base-100 rounded-2xl shadow-sm hover:shadow-2xl transition duration-300 border border-gray-100 overflow-hidden"
           >
-
             {/* HEADER */}
             <div className="bg-gradient-to-r from-[#08aafb] to-[#ae0cff] text-white p-5">
               <div className="flex justify-between items-center">
@@ -48,57 +93,56 @@ const ParcelDetails = () => {
 
             {/* BODY */}
             <div className="p-5 space-y-5">
-
-              {/* 🔥 EXTRA INFO ROW */}
-              <div className="grid grid-cols-2 gap-3 text-xs text-gray-500 bg-gray-50 p-3 rounded-xl">
-                <p><span className="font-semibold">Email:</span> {p.senderEmail}</p>
-                <p><span className="font-semibold">Receiver Email:</span> {p.reciverEmail}</p>
-                <p><span className="font-semibold">Sender Division:</span> {p.senderDivition}</p>
-                <p><span className="font-semibold">Receiver Division:</span> {p.reciverDiviton}</p>
+              {/* EXTRA INFO */}
+              <div className="grid grid-cols-2 gap-3 text-xs bg-base-200 p-3 rounded-xl">
+                <p>
+                  <span className="font-semibold">Email:</span> {p.senderEmail}
+                </p>
+                <p>
+                  <span className="font-semibold">Receiver Email:</span>{" "}
+                  {p.reciverEmail}
+                </p>
+                <p>
+                  <span className="font-semibold">Sender Division:</span>{" "}
+                  {p.senderDivition}
+                </p>
+                <p>
+                  <span className="font-semibold">Receiver Division:</span>{" "}
+                  {p.reciverDiviton}
+                </p>
               </div>
 
-              {/* Sender & Receiver GRID */}
+              {/* SENDER & RECEIVER */}
               <div className="grid grid-cols-2 gap-4">
-
-                {/* Sender */}
-                <div className="bg-gray-50 p-3 rounded-xl space-y-1">
-                  <p className="text-xs text-gray-400 flex items-center gap-1">
+                <div className="bg-base-200 p-3 rounded-xl space-y-1">
+                  <p className="text-xs flex items-center gap-1">
                     <FaUser /> Sender
                   </p>
-
-                  <p className="font-semibold text-gray-800">{p.senderName}</p>
-
-                  <p className="text-xs text-gray-500 flex items-center gap-1">
+                  <p className="font-semibold">{p.senderName}</p>
+                  <p className="text-xs flex items-center gap-1">
                     <FaPhone /> {p.senderPhone}
                   </p>
-
-                  <p className="text-xs text-gray-500 flex items-center gap-1">
+                  <p className="text-xs flex items-center gap-1">
                     <FaMapMarkerAlt /> {p.senderDistrict}
                   </p>
                 </div>
 
-                {/* Receiver */}
-                <div className="bg-gray-50 p-3 rounded-xl space-y-1">
-                  <p className="text-xs text-gray-400 flex items-center gap-1">
+                <div className="bg-base-200 p-3 rounded-xl space-y-1">
+                  <p className="text-xs flex items-center gap-1">
                     <FaUser /> Receiver
                   </p>
-
-                  <p className="font-semibold text-gray-800">{p.receiverName}</p>
-
-                  <p className="text-xs text-gray-500 flex items-center gap-1">
+                  <p className="font-semibold">{p.receiverName}</p>
+                  <p className="text-xs flex items-center gap-1">
                     <FaPhone /> {p.receiverPhone}
                   </p>
-
-                  <p className="text-xs text-gray-500 flex items-center gap-1">
+                  <p className="text-xs flex items-center gap-1">
                     <FaMapMarkerAlt /> {p.receiverDistrict}
                   </p>
                 </div>
-
               </div>
 
               {/* COST + WEIGHT + STATUS */}
               <div className="flex justify-between items-center border-t pt-4">
-
                 <div>
                   <p className="text-xs text-gray-400">Cost</p>
                   <p className="text-green-600 font-bold text-lg">
@@ -108,22 +152,56 @@ const ParcelDetails = () => {
 
                 <div>
                   <p className="text-xs text-gray-400">Weight</p>
-                  <p className="font-semibold text-gray-700">
-                    {p.weight} kg
-                  </p>
+                  <p className="font-semibold">{p.weight} kg</p>
                 </div>
 
                 <div>
                   <p className="text-xs text-gray-400">Status</p>
-                  <span className="px-3 py-1 text-xs rounded-full bg-yellow-100 text-yellow-600">
-                    Pending
+                  <span
+                    className={`px-3 py-1 text-xs rounded-full ${
+                      p.paymentStatus === "paid"
+                        ? "bg-green-100 text-green-600"
+                        : "bg-yellow-100 text-yellow-600"
+                    }`}
+                  >
+                    {p.paymentStatus === "paid" ? "Paid" : "Pending"}
                   </span>
                 </div>
+              </div>
 
+              {/* ✅ ACTION BUTTONS (BOTTOM) */}
+              <div className="flex justify-between items-center mt-4 gap-2">
+                {/* LEFT */}
+                <div className="flex gap-2">
+                  <button
+                    onClick={() => handleEdit(p)}
+                    className="px-4 py-2 text-sm rounded-xl bg-base-200 hover:bg-base-300 transition flex items-center gap-1"
+                  >
+                    ✏️ Edit
+                  </button>
+
+                  <button
+                    onClick={() => handleDelete(p._id)}
+                    className="px-4 py-2 text-sm rounded-xl bg-red-500 hover:bg-red-600 text-white transition flex items-center gap-1"
+                  >
+                    🗑 Delete
+                  </button>
+                </div>
+
+                {/* RIGHT */}
+                {p.paymentStatus === "paid" ? (
+                  <button className="px-5 py-2 text-sm rounded-xl bg-gradient-to-r from-green-500 to-emerald-600 text-white font-semibold shadow-md hover:scale-105 transition">
+                    💳 Paid
+                  </button>
+                ) : (
+                  <button  onClick={()=>handlePayment(p)} className="px-5 py-2 text-sm rounded-xl bg-gradient-to-r from-green-500 to-emerald-600 text-white font-semibold shadow-md hover:scale-105 transition">
+                    💳 Pay Now
+                  </button>
+                )}
               </div>
 
               {/* INSTRUCTIONS */}
-              <div className="bg-gray-50 p-3 rounded-xl text-xs text-gray-600 space-y-1">
+              <div className="bg-base-200 p-3 rounded-xl text-xs space-y-1">
                 <p>
                   <span className="font-semibold">Pickup:</span>{" "}
                   {p.pickupInstruction}
@@ -133,11 +211,9 @@ const ParcelDetails = () => {
                   {p.deliveryInstruction}
                 </p>
               </div>
-
             </div>
           </div>
         ))}
-
       </div>
     </div>
   );

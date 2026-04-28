@@ -8,20 +8,22 @@ import { AuthContext } from "../../useContext/FormContext/AuthContext";
 import ProfileDropdown from "../../Utility/ProfileDropdown";
 import { FadeLoader } from "react-spinners";
 
-
 const Header = () => {
-  const {user,loading}=useContext(AuthContext)
+  const { user, loading } = useContext(AuthContext);
   const navLinks = [
     { name: "Home", path: "/" },
     { name: "Coverage", path: "/coverage" },
-    {name:"Parcel Send" ,path:"/parcelsend"}
+    { name: "Parcel Send", path: "/parcelsend" },
   ];
 
   return (
     <header className="bg-base-100 shadow z-500">
       <Container className=" py-3.5 flex items-center justify-between">
         {/* Logo */}
-        <Link> <Logo></Logo></Link>
+        <Link>
+          {" "}
+          <Logo></Logo>
+        </Link>
 
         {/* Desktop Menu */}
         <nav className="hidden md:flex items-center gap-8">
@@ -29,7 +31,9 @@ const Header = () => {
             <NavLink
               key={index}
               to={link.path}
-              className="font-medium"
+              className={({ isActive }) => {
+               return isActive ? "text-color font-bold" : "text-gray-500";
+              }}
             >
               {link.name}
             </NavLink>
@@ -38,23 +42,23 @@ const Header = () => {
 
         {/* Right Side */}
         <div className="flex items-center ">
-          {loading?  
-           <FadeLoader width={2} color="#ae0cff" height={12} margin={-3} />
-           :
-          user?
-          <ProfileDropdown></ProfileDropdown>:
+          {loading ? (
+            <FadeLoader width={2} color="#ae0cff" height={12} margin={-3} />
+          ) : user ? (
+            <ProfileDropdown></ProfileDropdown>
+          ) : (
+            <Link
+              to={"login"}
+              className="background-color text-white  px-4 py-2 rounded-lg"
+            >
+              <span>Sign Up</span>
+            </Link>
+          )}
 
-          <Link to={"login"} className="background-color text-white  px-4 py-2 rounded-lg">
-            <span>Sign Up</span>
-          </Link>
-          }
-           
           <div className="hidden max-md:flex">
-          <AppSidebar></AppSidebar>
+            <AppSidebar></AppSidebar>
           </div>
-          {/* <Theme></Theme> */}
         </div>
-        
       </Container>
     </header>
   );

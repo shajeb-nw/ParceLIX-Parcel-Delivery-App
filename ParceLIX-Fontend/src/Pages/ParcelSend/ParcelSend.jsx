@@ -1,10 +1,12 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { FaUser } from "react-icons/fa";
 import Container from "../../Utility/Container";
 import axios from "axios";
 import Swal from "sweetalert2";
 import useAxious from "../../Hooks/useAxious";
+import { useNavigate } from "react-router";
+import { AuthContext } from "../../useContext/FormContext/AuthContext";
 
 const ParcelSend = () => {
   const {
@@ -16,13 +18,15 @@ const ParcelSend = () => {
   const senderRegion = watch("senderDivition");
   const reciverRegion = watch("reciverDiviton");
   const axiosInstance = useAxious();
+  const navigate=useNavigate()
+  const{user}=useContext(AuthContext)
 
   const [parcelType, setParcelType] = useState("document");
   const [diviton, segtDiviton] = useState([]);
   const [district, setDistrict] = useState([]);
   const [districtSender, setDistrictSender] = useState([]);
   const [reciverDistrict, setDistrictReciver] = useState([]);
-  console.log(diviton);
+
   
   const onSubmit = (data) => {
     const formData = {
@@ -66,14 +70,16 @@ const ParcelSend = () => {
           text: "Parcel Was Send. thank you!",
           icon: "success",
         });
+        navigate("/deashbord/parcelDetails")
       }
     });
   };
+
   useEffect(() => {
     let diviton = async () => {
       try {
-        const AllDiviton = await axios.get("division.json");
-        const allDistrict = await axios.get("warehouses.json");
+        const AllDiviton = await axios.get("/division.json");
+        const allDistrict = await axios.get("/warehouses.json");
         segtDiviton(Array.isArray(AllDiviton.data) ? AllDiviton.data : []);
         setDistrict(allDistrict?.data);
       } catch (error) {
@@ -82,6 +88,7 @@ const ParcelSend = () => {
     };
     diviton();
   }, []);
+
 
   useEffect(() => {
     const districts = () => {
@@ -96,6 +103,7 @@ const ParcelSend = () => {
     };
     districts();
   }, [district, senderRegion]);
+
   useEffect(() => {
     const reciverDistricts = () => {
       try {
@@ -181,11 +189,15 @@ const ParcelSend = () => {
 
               <input
                 placeholder="Sender Name"
+                defaultValue={user?.displayName}
+                readOnly
                 {...register("senderName", { required: true })}
                 className={inputClass + " mb-2"}
               />
               <input
                 placeholder="Sender Email"
+                defaultValue={user?.email}
+                readOnly
                 {...register("senderEmail", { required: true })}
                 className={inputClass + " mb-2"}
               />

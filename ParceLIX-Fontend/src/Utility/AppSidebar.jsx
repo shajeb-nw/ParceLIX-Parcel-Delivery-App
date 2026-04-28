@@ -6,6 +6,7 @@ import {
   FaShoppingCart,
   FaFileAlt,
   FaCog,
+  FaTruck,
 } from "react-icons/fa";
 import Logo from "./Logo";
 import { NavLink } from "react-router";
@@ -49,6 +50,10 @@ const AppSidebar = () => {
 
           <MenuItem icon={<PiMapPinAreaLight />} component={<NavLink to={"/coverage"}/>}>
             Coverage
+          </MenuItem>
+
+          <MenuItem icon={<FaTruck />} component={<NavLink to={"/parcelsend"}/>}>
+           Parcel Send
           </MenuItem>
 
           <MenuItem icon={<FaShoppingCart />} component={<NavLink />}>
