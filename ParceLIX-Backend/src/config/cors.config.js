@@ -1,5 +1,4 @@
 const env=require("./env")
-console.log(env);
 
 const corsOptions = {
   origin: [

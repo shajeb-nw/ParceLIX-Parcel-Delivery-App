@@ -1,8 +1,9 @@
 const express=require("express")
-const {createParcel,getController}=require("../controller/parcelController")
+const {postController,getController,deleteController}=require("../controller/parcelController")
 const router=express.Router()
 
-router.post("/" , createParcel)
+router.post("/" , postController)
 router.get("/",getController)
+router.delete("/:id",deleteController)
 
 module.exports=router
