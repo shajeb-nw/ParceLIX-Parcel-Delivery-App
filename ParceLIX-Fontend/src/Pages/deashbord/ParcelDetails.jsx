@@ -11,7 +11,8 @@ import { Link } from "react-router";
 const ParcelDetails = () => {
   const axiousInstance = useAxious();
   const { user } = useContext(AuthContext);
-
+ console.log(axiousInstance);
+ 
   const { data, isLoading, refetch } = useQuery({
     queryKey: ["todos", user?.email],
     enabled: !!user?.email,
