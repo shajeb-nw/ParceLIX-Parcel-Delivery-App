@@ -20,13 +20,19 @@ const PaymentHistory = () => {
     },
   });
 
-  if (isLoading) {
-    return <div className="text-center mt-10">Loading...</div>;
-  }
-
+if (isLoading) {
   return (
-    <div className="p-4 md:p-8">
-      <h2 className="text-2xl font-bold mb-6">💳 Payment History</h2>
+    <div className="w-full min-h-screen flex items-center justify-center">
+      <div className="flex flex-col items-center justify-center">
+        <span className="loading loading-spinner loading-lg"></span>
+      <p className="mt-3 text-gray-500">Loading payment history...</p>
+      </div>
+    </div>
+  );
+}
+  return (
+    <div className="p-4 md:p-8 w-full min-h-screen">
+      <h2 className="text-2xl font-bold mb-6 text-center">💳 Payment History</h2>
 
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         {data.map((item) => (
@@ -76,9 +82,15 @@ const PaymentHistory = () => {
       </div>
 
       {data.length === 0 && (
-        <div className="text-center text-gray-500 mt-10">
-          No payment history found
-        </div>
+        <div className="w-full min-h-screen flex flex-col items-center justify-center">
+      <FaCreditCard className="text-5xl text-gray-300 mb-4" />
+      <h2 className="text-xl font-semibold text-gray-600">
+        No Payment Found
+      </h2>
+      <p className="text-gray-400 mt-2">
+        You haven’t made any payments yet
+      </p>
+    </div>
       )}
     </div>
   );

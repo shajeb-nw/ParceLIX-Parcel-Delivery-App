@@ -10,14 +10,12 @@ const DeashbordLayout = () => {
     <div className="flex flex-col min-h-screen">
       <DashboardHeader></DashboardHeader>
       <div className="flex flex-1">
-
-       <div className="flex flex-row min-h-screen">
-        <div className="max-[630px]:hidden flex-1 h-full">
-          <DeashbordSidebar></DeashbordSidebar>
+        <div className="flex flex-row min-h-screen">
+          <div className="max-[630px]:hidden flex-1 h-full">
+            <DeashbordSidebar></DeashbordSidebar>
+          </div>
+          <Outlet></Outlet>
         </div>
-        <Outlet></Outlet>
-       </div>
-
       </div>
       <Footer></Footer>
 

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import {
   LuChevronsLeft,
   LuChevronsRight,
@@ -6,11 +6,11 @@ import {
 } from "react-icons/lu";
 import { Menu, MenuItem, Sidebar } from "react-pro-sidebar";
 import { FaClipboardList, FaCreditCard, FaTruck } from "react-icons/fa";
-import { Link } from "react-router";
+import { NavLink } from "react-router";
 
 const DeashbordSidebar = () => {
   const [collapsed, setCollapsed] = React.useState(false);
-  const [activeIndex, setActiveIndex] = useState(0);
+
   const navLinks = [
     { name: "Dashboard", path: "/deashbord", icon: <LuLayoutDashboard /> },
     { name: "Send Parcel", path: "parcelsend", icon: <FaTruck /> },
@@ -44,25 +44,27 @@ const DeashbordSidebar = () => {
         </button>
 
         <Menu className="mt-10">
-          {navLinks.map((link, index) => {
-            const isActive = activeIndex === index;
-            return (
-              <MenuItem
-                key={index}
-                icon={link.icon}
-                component={<Link to={link.path} />}
-                onClick={() => setActiveIndex(index)}
-                className={`transition-all duration-300  cursor-pointer
-        ${
-          isActive
-            ? "bg-blue-100 text-blue-600  border-blue-600 font-semibold"
-            : " hover:bg-gray-100 hover:text-blue-500"
-        }`}
-              >
-                {link.name}
-              </MenuItem>
-            );
-          })}
+          {navLinks.map((link, index) => (
+            <NavLink
+              key={index}
+              to={link.path}
+              end={link.path === "/deashbord"}
+              className="block"
+            >
+              {({ isActive }) => (
+                <MenuItem
+                  icon={link.icon}
+                  className={`transition-all duration-300 ${
+                    isActive
+                      ? "bg-blue-100 text-blue-600 font-semibold"
+                      : "hover:bg-gray-100 hover:text-blue-500"
+                  }`}
+                >
+                  {link.name}
+                </MenuItem>
+              )}
+            </NavLink>
+          ))}
         </Menu>
       </Sidebar>
     </div>
